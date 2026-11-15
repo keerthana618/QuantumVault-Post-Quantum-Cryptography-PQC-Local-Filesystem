@@ -1,4 +1,3 @@
-"""Concrete KEM scaffolding used by the vault implementation."""
 
 from __future__ import annotations
 
