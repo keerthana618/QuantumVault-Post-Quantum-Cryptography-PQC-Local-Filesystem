@@ -34,9 +34,12 @@ def _candidate_paths() -> list[Path]:
         home_dir / "_oqs" / "bin",
         home_dir / "_oqs" / "lib",
         home_dir / "_oqs" / "lib64",
+        Path(".") / ".vendor" / "liboqs" / "build" / "bin",
         Path(".") / ".vendor" / "liboqs" / "build" / "lib",
         Path(".") / ".vendor" / "liboqs" / "build" / "src",
         Path(".") / ".vendor" / "liboqs" / "build",
+        Path("C:/Users/Asus/_oqs/bin"),
+        Path("C:/Users/Asus/_oqs/lib"),
     ])
     return [path for path in dict.fromkeys(roots) if path.exists()]
 
