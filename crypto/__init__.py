@@ -8,6 +8,7 @@ from .errors import (
     InvalidKeyError,
     KEMCheckFailedError,
     KEMNotAvailableError,
+    KEMUnavailableError,
     UnsupportedAlgorithmError,
 )
 from .interfaces import KeyDerivationFunction, KeyEncapsulationMechanism, SymmetricCipher
@@ -17,6 +18,7 @@ __all__ = [
     "CryptoError",
     "CryptoConfigurationError",
     "KEMNotAvailableError",
+    "KEMUnavailableError",
     "UnsupportedAlgorithmError",
     "InvalidKeyError",
     "EncapsulationError",

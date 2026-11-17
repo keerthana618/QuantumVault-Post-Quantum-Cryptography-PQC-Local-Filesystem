@@ -13,6 +13,8 @@ def _candidate_paths() -> list[Path]:
     roots = []
     for candidate in (
         os.environ.get("LIBOQS_LIBRARY"),
+        os.environ.get("LIBOQS_INSTALL_PATH"),
+        os.environ.get("OQS_INSTALL_PATH"),
         os.environ.get("LD_LIBRARY_PATH"),
         os.environ.get("DYLD_LIBRARY_PATH"),
         os.environ.get("PATH"),
@@ -22,14 +24,19 @@ def _candidate_paths() -> list[Path]:
         for part in str(candidate).split(os.pathsep):
             if part:
                 roots.append(Path(part))
+    home_dir = Path.home()
     roots.extend([
         Path("/usr/local/lib"),
         Path("/usr/lib"),
         Path("/opt/liboqs/lib"),
         Path("/usr/local/lib64"),
         Path("/usr/lib64"),
+        home_dir / "_oqs" / "bin",
+        home_dir / "_oqs" / "lib",
+        home_dir / "_oqs" / "lib64",
         Path(".") / ".vendor" / "liboqs" / "build" / "lib",
         Path(".") / ".vendor" / "liboqs" / "build" / "src",
+        Path(".") / ".vendor" / "liboqs" / "build",
     ])
     return [path for path in dict.fromkeys(roots) if path.exists()]
 

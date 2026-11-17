@@ -15,6 +15,10 @@ class KEMNotAvailableError(CryptoError):
     """Raised when a KEM backend is unavailable on the host machine."""
 
 
+class KEMUnavailableError(KEMNotAvailableError):
+    """Compatibility alias for backend unavailability errors in liboqs-backed KEM code."""
+
+
 class UnsupportedAlgorithmError(CryptoConfigurationError):
     """Raised when a requested key-encapsulation mechanism is unsupported."""
 
@@ -80,3 +84,19 @@ def _get_params(params):
     except KeyError:
         raise ValueError(f"Unknown parameter set: {params!r}. "
                          f"Choose from {list(PARAMS)}")
+
+
+__all__ = [
+    "CryptoError",
+    "CryptoConfigurationError",
+    "KEMNotAvailableError",
+    "KEMUnavailableError",
+    "UnsupportedAlgorithmError",
+    "InvalidKeyError",
+    "EncapsulationError",
+    "DecapsulationError",
+    "KEMCheckFailedError",
+    "Params",
+    "PARAMS",
+    "_get_params",
+]
