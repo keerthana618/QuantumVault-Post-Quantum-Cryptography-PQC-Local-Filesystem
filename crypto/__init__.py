@@ -9,6 +9,8 @@ from .errors import (
     KEMCheckFailedError,
     KEMNotAvailableError,
     KEMUnavailableError,
+    SignatureBackendError,
+    SigningError,
     UnsupportedAlgorithmError,
 )
 from .interfaces import KeyDerivationFunction, KeyEncapsulationMechanism, SymmetricCipher
@@ -24,6 +26,8 @@ __all__ = [
     "EncapsulationError",
     "DecapsulationError",
     "KEMCheckFailedError",
+    "SigningError",
+    "SignatureBackendError",
     "KeyEncapsulationMechanism",
     "KeyDerivationFunction",
     "SymmetricCipher",

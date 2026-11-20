@@ -35,6 +35,14 @@ class DecapsulationError(CryptoError):
     """Raised when a KEM decapsulation step fails."""
 
 
+class SigningError(CryptoError):
+    """Raised when signing fails or signing inputs are invalid."""
+
+
+class SignatureBackendError(CryptoError):
+    """Raised when the signature backend is unavailable or cannot operate."""
+
+
 class KEMCheckFailedError(CryptoError):
     """Raised when a liboqs/KEM verification check fails."""
 
@@ -95,6 +103,8 @@ __all__ = [
     "InvalidKeyError",
     "EncapsulationError",
     "DecapsulationError",
+    "SigningError",
+    "SignatureBackendError",
     "KEMCheckFailedError",
     "Params",
     "PARAMS",
