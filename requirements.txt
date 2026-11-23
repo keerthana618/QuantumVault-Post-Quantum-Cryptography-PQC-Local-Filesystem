@@ -1,2 +1,4 @@
 liboqs-python==0.16.0.2
 pytest>=8.0
+cryptography>=46.0
+argon2-cffi>=25.1

@@ -27,6 +27,18 @@ class InvalidKeyError(CryptoError):
     """Raised when key material does not match the expected format."""
 
 
+class InvalidNonceError(CryptoError):
+    """Raised when a nonce does not match the required format."""
+
+
+class DecryptionError(CryptoError):
+    """Raised when authenticated decryption fails."""
+
+
+class KeyDerivationError(CryptoError):
+    """Raised when key derivation inputs or configuration are invalid."""
+
+
 class EncapsulationError(CryptoError):
     """Raised when a KEM encapsulation step fails."""
 
@@ -46,6 +58,13 @@ class SignatureBackendError(CryptoError):
 class KEMCheckFailedError(CryptoError):
     """Raised when a liboqs/KEM verification check fails."""
 
+class KeystoreError(Exception):
+    """Key file is missing, malformed, or has bad input."""
+ 
+ 
+class WrongPasswordError(KeystoreError):
+    """Password is wrong (or the key file was tampered with)."""
+ 
 
 # --------------------------------------------------------------------------
 # Constants
@@ -101,6 +120,9 @@ __all__ = [
     "KEMUnavailableError",
     "UnsupportedAlgorithmError",
     "InvalidKeyError",
+    "InvalidNonceError",
+    "DecryptionError",
+    "KeyDerivationError",
     "EncapsulationError",
     "DecapsulationError",
     "SigningError",
