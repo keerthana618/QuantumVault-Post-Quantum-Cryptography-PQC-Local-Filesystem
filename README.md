@@ -1,53 +1,85 @@
 # QuantumVault-Post-Quantum-Cryptography-PQC-Local-Filesystem
 
-This work is a Python-based local-filesystem vault project intended to use post-quantum key encapsulation as the foundation for file-level encryption. The project currently has the KEM layer implemented and validated against the native liboqs runtime, but the higher-level vault workflow beyond ML-KEM negotiation is not yet a complete production implementation.
+QuantumVault is a Python cryptography prototype for a local-filesystem vault. It combines NIST-standardized post-quantum primitives with authenticated symmetric encryption and password-derived key storage.
+
+## Implemented components
+
+- **ML-KEM**: ML-KEM-512, ML-KEM-768, and ML-KEM-1024 key encapsulation through `liboqs`
+- **ML-DSA**: ML-DSA-44, ML-DSA-65, and ML-DSA-87 digital signatures through `liboqs`
+- **AES-256-GCM**: random-nonced authenticated encryption with optional AAD
+- **HKDF-SHA256**: RFC 5869 key derivation for strong input key material
+- **Argon2id keystore**: password-protected private-key storage with AES-256-GCM
+- **File envelope**: versioned ML-KEM + HKDF-SHA256 + AES-256-GCM encrypted file blobs
+- **Error handling**: normalized cryptographic exceptions for invalid keys, unavailable backends, and decryption failures
+
+The cryptographic modules are in `crypto/`. Unit tests are in `tests/`, and native backend round-trip checks are in `scripts/`.
 
 ## Requirements
 
-- Python 3.14.7 (the installed runtime in this environment is compatible with `liboqs-python==0.16.0.2`)
-- Windows 11
-- Microsoft Visual Studio 2022 Build Tools with MSVC and the Windows SDK
-- CMake and Ninja available in the active shell
-- Git
+- Python 3.10 or newer
+- `liboqs` shared library enabled for ML-KEM and ML-DSA
+- Windows, Linux, or macOS capable of running the native `liboqs` backend
 
-## Dependency installation
+Python dependencies are listed in `requirements.txt`:
+
+```text
+liboqs-python==0.16.0.2
+pytest>=8.0
+cryptography>=46.0
+argon2-cffi>=25.1
+```
+
+## Setup
+
+Create and activate a virtual environment.
+
+Linux or macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+Windows PowerShell:
 
 ```powershell
-cd D:\Infotact_Internship\CryptoValut\QuantumVault-Post-Quantum-Cryptography-PQC-Local-Filesystem
-python -m venv .venv
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-## Native liboqs build (Windows)
+The `liboqs-python` package requires a compatible native `liboqs` runtime. If a system package or shared library is unavailable, build `liboqs` with the ML-KEM and ML-DSA algorithms you need, then expose the shared-library directory to the process through `LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`, or `LIBOQS_LIBRARY` and `PATH` as appropriate for the platform.
 
-Use a proper Visual Studio developer shell and build only the ML-KEM algorithms needed for this project:
+The repository includes `scripts/build_liboqs.sh` for Linux-style environments.
 
-```powershell
-$vs = 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat'
-$cmake = 'C:\Program Files\CMake\bin\cmake.exe'
-$ninja = 'C:\Users\Asus\AppData\Local\Python\pythoncore-3.14-64\Scripts\ninja.exe'
-$liboqs = 'D:\Infotact_Internship\CryptoValut\QuantumVault-Post-Quantum-Cryptography-PQC-Local-Filesystem\.vendor\liboqs'
-cmd /d /c "cd /d `"$liboqs`" && call `"$vs`" -arch=x64 -host_arch=x64 && `"$cmake`" -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DOQS_BUILD_ONLY_LIB=ON -DOQS_MINIMAL_BUILD=`"KEM_ml_kem_512;KEM_ml_kem_768;KEM_ml_kem_1024`" -DCMAKE_MAKE_PROGRAM=`"$ninja`" && `"$cmake`" --build build --parallel"
+## Verification
+
+Run the unit test suite:
+
+```bash
+python -m pytest -q
 ```
 
-Then expose the generated `oqs.dll` to Python:
+Run native ML-KEM checks:
 
-```powershell
-$env:LIBOQS_LIBRARY = 'D:\Infotact_Internship\CryptoValut\QuantumVault-Post-Quantum-Cryptography-PQC-Local-Filesystem\.vendor\liboqs\build\bin'
-$env:PATH = "$env:LIBOQS_LIBRARY;$env:PATH"
-```
-
-## Verification commands
-
-```powershell
-python -c "import oqs; print(oqs.get_enabled_kem_mechanisms())"
+```bash
 python scripts/check_liboqs_kem.py
-pytest -q
 python scripts/check_kem_roundtrip.py
 ```
 
-## Actual project status
+Run native ML-DSA checks:
 
-The implemented, verified parts are the native liboqs import path and the ML-KEM round-trip logic in `crypto/kem.py`. The repository does not yet contain a complete file-encryption vault workflow, HKDF-based key derivation, or authenticated file storage; those remain explicit gaps rather than assumptions.
+```bash
+python scripts/check_sig_roundtrip.py
+```
+
+Use `python -c "import oqs; print(oqs.get_enabled_kem_mechanisms())"` to inspect available ML-KEM mechanisms and `python -c "import oqs; print(oqs.get_enabled_sig_mechanisms())"` to inspect available ML-DSA mechanisms.
+
+## Project status
+
+The ML-KEM, ML-DSA, AES-GCM, HKDF-SHA256, password-protected keystore, and file-envelope layers have working implementations and tests. ML-KEM and ML-DSA round-trip checks pass against the native standardized mechanisms in the configured liboqs build.
+
+This repository is a cryptographic component prototype, not yet a complete production vault application. A higher-level file vault workflow, metadata format, secure CLI or GUI, key lifecycle management, backup and recovery, and hardened end-to-end integration are not yet implemented.
