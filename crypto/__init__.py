@@ -20,6 +20,12 @@ from .errors import (
 )
 from .interfaces import KeyDerivationFunction, KeyEncapsulationMechanism, SymmetricCipher
 from .kem import KEMFactory, MLKEM
+from .filevault import (
+    decrypt_file,
+    decrypt_file_bytes,
+    encrypt_file,
+    encrypt_file_bytes,
+)
 
 __all__ = [
     "CryptoError",
@@ -43,4 +49,8 @@ __all__ = [
     "SymmetricCipher",
     "MLKEM",
     "KEMFactory",
+    "encrypt_file",
+    "encrypt_file_bytes",
+    "decrypt_file",
+    "decrypt_file_bytes",
 ]
